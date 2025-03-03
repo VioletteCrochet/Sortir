@@ -7,8 +7,12 @@ use Doctrine\Common\Collections\ArrayCollection;
 use Doctrine\Common\Collections\Collection;
 use Doctrine\DBAL\Types\Types;
 use Doctrine\ORM\Mapping as ORM;
+use Symfony\Component\Validator\Constraints as Assert;
 
 #[ORM\Entity(repositoryClass: AddressRepository::class)]
+#[ORM\Table(name: "address", uniqueConstraints: [
+    new ORM\UniqueConstraint(name: "unique_street_city", columns: ["street", "city"])
+])]
 class Address
 {
     #[ORM\Id]
@@ -16,22 +20,24 @@ class Address
     #[ORM\Column]
     private ?int $id = null;
 
-    #[ORM\Column(length: 150)]
+    #[ORM\Column(length: 150, nullable: false)]
     private ?string $name = null;
 
-    #[ORM\Column(length: 150)]
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 150, nullable: false)]
     private ?string $street = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3, nullable: false)]
     private ?string $lat = null;
 
-    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3)]
+    #[ORM\Column(type: Types::DECIMAL, precision: 10, scale: 3, nullable: false)]
     private ?string $lng = null;
 
-    #[ORM\Column(length: 50)]
+    #[Assert\NotBlank]
+    #[ORM\Column(length: 50, nullable: false)]
     private ?string $city = null;
 
-    #[ORM\Column(length: 5)]
+    #[ORM\Column(length: 5, nullable: false)]
     private ?string $zipCode = null;
 
     /**

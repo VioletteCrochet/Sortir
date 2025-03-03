@@ -53,10 +53,9 @@ final class AddressController extends AbstractController
     }
 
     #[Route('/{id}/edit', name: 'app_address_edit', methods: ['GET', 'POST'])]
+    #[isGranted('ROLE_ADMIN')]
     public function edit(Request $request, Address $address, EntityManagerInterface $entityManager): Response
     {
-        $isAdmin = $this->isGranted('ROLE_ADMIN');
-
         $form = $this->createForm(AddressType::class, $address);
         $form->handleRequest($request);
 
@@ -72,12 +71,12 @@ final class AddressController extends AbstractController
         ]);
     }
 
-    #[Route('/{id}', name: 'app_address_delete', methods: ['POST'])]
+    #[Route('/{id}', name: 'address_ban', methods: ['POST'])]
     #[isGranted('ROLE_ADMIN')]
     public function delete(AddressRepository $ar, Address $address, EntityManagerInterface $entityManager): Response
     {
             $ar->banAddress($address, $entityManager);
 
-        return $this->redirectToRoute('app_address_index', [], Response::HTTP_SEE_OTHER);
+        return $this->redirectToRoute('admin_dashboard_addresses', [], Response::HTTP_SEE_OTHER);
     }
 }

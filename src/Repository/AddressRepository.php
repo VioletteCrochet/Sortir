@@ -57,17 +57,24 @@ class AddressRepository extends ServiceEntityRepository
 
     public function banAddress(Address $address, EntityManagerInterface $em): void
     {
-        $address->setIsAllowed(false);
+       ;
+        if ($address->isAllowed()) {
+            $address->setIsAllowed(false);
 
-        $events = $address->getEvents();
-        foreach ($events as $event) {
-            $event->setAddress(null);
-            $event->setStatus(EventStatus::CANCELLED);
-            $event->setCancelReason("L'addresse de la sortie n'est pas authorisée");
+
+            $events = $address->getEvents();
+            foreach ($events as $event) {
+                $event->setAddress(null);
+                $event->setStatus(EventStatus::CANCELLED);
+                $event->setCancelReason("L'addresse de la sortie n'est pas authorisée");
+            }
+        } else {
+            $address->setIsAllowed(true);
         }
+
 
         $em->persist($address);
         $em->flush();
     }
 
-}
+    }
